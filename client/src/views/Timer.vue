@@ -2,7 +2,7 @@
   <div class="timer">
     <h1
       :style="colorStyle"
-      :class="{hidden: data.isSpinning}">
+      :class="{hidden: data.spinningState != 0}">
       {{getTime()}}
     </h1>
     <div class="arrow"
@@ -13,13 +13,15 @@
 </template>
 
 <script>
-import { getWheelColorByDeg } from '@/methods'
+import { getWheelColorByDeg, getUnixNow } from '@/methods'
 import { data } from '@/data'
 
 export default {
   data() {
     return {
-      data
+      data,
+      currentTime: 0,
+      intervalId: -1
     }
   },
   computed: {
@@ -31,8 +33,20 @@ export default {
   },
   methods: {
     getTime() {
-      return this.data.currentTime.toFixed(2);
+      return this.currentTime.toFixed(2);
     }
+  },
+  created() {
+    this.intervalId = setInterval(() => {
+      const i = this.data.nextSpinAt - getUnixNow();
+      if (i > 0 && this.data.spinningState == 0)
+        this.currentTime = i / 1000;
+      else
+        this.currentTime = 0;
+    }, 10);
+  },
+  destroyed() {
+    clearInterval(this.intervalId);
   }
 }
 </script>

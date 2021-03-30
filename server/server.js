@@ -110,10 +110,17 @@ app.options('*', function(req, res) {
 });
 
 app.get('*', function(req, res) {
-    if (req.path == '/') {
+    if (req.path == '/' || req.path == '/login') {
         res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-    } else {
+    } else if (
+        req.url.endsWith('.svg') || 
+        req.url.endsWith('.css') || 
+        req.url.endsWith('.js') ||
+        req.url.endsWith('.ico')
+    ) {
         res.sendFile(path.join(__dirname, '../client/dist/' + req.path));
+    } else {
+        res.status(403).send();
     }
 });
 

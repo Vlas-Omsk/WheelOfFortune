@@ -55,6 +55,10 @@ export default {
   align-items: flex-end;
 }
 
+.person {
+  height: 26px;
+}
+
 .username {
   font-size: 14px;
   font-weight: bold;

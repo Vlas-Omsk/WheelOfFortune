@@ -1,9 +1,6 @@
 <template>
   <div class="login">
-    <div class="error" v-if="error">
-      {{error}}
-    </div>
-    <div>
+    <div class="form">
       <div class="field">
         <label>Username</label>
         <input type="text" v-model="username" />
@@ -12,8 +9,10 @@
         <label>Password</label>
         <input type="text" v-model="password" />
       </div>
-      <button class="btn" @click.stop.prevent="signIn()">Sign in</button>
-      <button class="btn" @click.stop.prevent="signUp()">Sign up</button>
+      <div class="buttons-container">
+        <button class="btn" @click="signIn()">Sign in</button>
+        <button class="btn" @click="signUp()">Sign up</button>
+      </div>
     </div>
   </div>
 </template>
@@ -27,7 +26,6 @@ export default {
     return {
       username: "",
       password: "",
-      error: "",
       data
     }
   },
@@ -67,7 +65,7 @@ export default {
     background-color: red;
   }
 
-  .btn {
-    margin: 0 5px;
+  .form {
+    margin: 20px;
   }
 </style>

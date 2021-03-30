@@ -34,16 +34,21 @@ export function getWheelColor(id) {
 
 export function spinWheel(windegree, winnumber) {
     data.betPopup.isVisible = false;
-    data.isSpinning = true;
+    data.spinningState = 1;
     easyAnimate((val) => data.wheelRoteteDegree = val, data.wheelRoteteDegree, data.wheelRoteteDegree + windegree, 10000, easingFunctions.easeInOutQuart, (val) => {
         data.history.unshift({
-            id: data.history.length + 1,
+            id: data.history.length == 0 ? 0 : data.history[0].id + 1,
             winnumber: winnumber
         });
-        data.isSpinning = false;
+        if (data.history.length > 100)
+            data.history = data.history.filter((_, i) => i < 100);
+        data.spinningState = 2;
         if (data.account != null)
             update();
-        resetBets();
+        setTimeout(() => {
+            data.spinningState = 0;
+            resetBets();
+        }, 3000);
     });
 }
 
@@ -63,7 +68,7 @@ export function showToast(content) {
     }, 5000);
 }
 
-export async function postData(url, data, onerror, onsuccess) {
+export async function postData(url, postData, onerror, onsuccess) {
     // var xhr = new XMLHttpRequest();
     // xhr.open("POST", url, true);
     // xhr.setRequestHeader('Content-Type', 'application/json');
@@ -73,13 +78,17 @@ export async function postData(url, data, onerror, onsuccess) {
     //     }
     // }
     // xhr.send(JSON.stringify(data));
-    data = JSON.stringify(data);
+    if (data.debug)
+        if (url[0] == '/')
+            url = 'http://localhost:48670' + url;
+
+    postData = JSON.stringify(postData);
     const response = await fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: data
+        body: postData
     });
     const responseData = await response.json();
 
@@ -137,4 +146,8 @@ export function easyAnimate(callback, start_value, end_value, time, func, endani
                 endanimation(val);
         }, msfortick * Math.pow(10, dxlen) * t, t);
     }
+}
+
+export function getUnixNow() {
+    return (+ new Date());
 }

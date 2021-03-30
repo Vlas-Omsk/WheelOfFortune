@@ -2,12 +2,16 @@ import { spinWheel, showToast } from '@/methods'
 import { data } from '@/data'
 
 var ws = null;
-const address = "ws://" + window.location.host + "/";
+let address;
+if (data.debug)
+    address = "ws://localhost:48670/";
+else
+    address = "ws://" + window.location.host + "/";
 
 export function connect() {
     if (ws != undefined && ws.readyState === WebSocket.OPEN)
         return;
-        console.log(address);
+    console.log(address);
     ws = new WebSocket(address);
 
     ws.onopen = function() {
@@ -18,7 +22,7 @@ export function connect() {
         setTimeout(() => {
             console.log('[WS] Reconnect');
             ws = new WebSocket(address);
-        }, 2000);
+        }, 5000);
     }
     ws.onmessage = function(msg) {
         msg = JSON.parse(msg.data);
@@ -29,7 +33,7 @@ export function connect() {
 function send(msg) {
     msg = JSON.stringify(msg);
     if (ws != undefined && ws.readyState === WebSocket.OPEN)
-    ws.send(msg);
+        ws.send(msg);
 }
 
 function processMessage(msg) {
@@ -38,14 +42,13 @@ function processMessage(msg) {
             data.history = msg.history;
             data.bets = msg.bets;
             data.wheelRoteteDegree = msg.degrees
-            data.currentTime = msg.time / 1000;
+            data.nextSpinAt = msg.nextSpinAt;
             break;
         case 'spin':
             spinWheel(msg.windegree, msg.winnumber);
-            data.currentTime = msg.time / 1000;
+            data.nextSpinAt = msg.nextSpinAt;
             break;
         case 'addbet':
-            console.log(data.bets[msg.bid]);
             data.bets[msg.bid].users.push(msg.userbet);
             break;
         case 'addbetprivate':

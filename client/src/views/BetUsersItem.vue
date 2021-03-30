@@ -27,7 +27,6 @@ export default {
 
   li {
     padding: 5px;
-    height: 30px;
     display: flex;
     justify-content: space-between;
   }

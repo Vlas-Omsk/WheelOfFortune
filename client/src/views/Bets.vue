@@ -30,4 +30,17 @@ export default {
     box-sizing: border-box;
     margin: 0 2em;
   }
+
+  @media (max-width: 510px) {
+    .bets {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr 1fr 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 210px) {
+    .bets {
+      margin: 0;
+    }
+  }
 </style>

@@ -1,13 +1,15 @@
 <template>
   <div id="app">
-    <div class="header">
+    <div class="container header">
       <router-link to="/" class="no-decoration">
         <h1>Wheel of fortune</h1>
       </router-link>
-      <router-link to="/login" class="btn no-decoration" v-if="data.account == null">
-        Login
-      </router-link>
-      <MiniProfile v-else />
+      <div class="right-container">
+        <router-link to="/login" class="btn no-decoration" v-if="data.account == null">
+          Login
+        </router-link>
+        <MiniProfile v-else />
+      </div>
     </div>
     <hr>
     <router-view />
@@ -37,13 +39,6 @@ export default {
   },
   created() {
     connect();
-
-    setInterval(() => {
-      if (data.currentTime > 0)
-        data.currentTime -= 0.01
-      else if (data.currentTime != 0)
-        data.currentTime = 0;
-    }, 10);
   }
 }
 </script>
@@ -61,15 +56,26 @@ export default {
     background-color: #26262c;
     overflow-x: hidden;
     margin: 0;
+    min-width: 150px;
   }
 
-  .header {
+  hr {
+    margin: 0;
+    border: none;
+    background-color: dimgrey;
+    height: 1.5px;
+  }
+
+  .container {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
     align-items: center;
-    background-color: #1c1c22;
-    padding: 15px 15px 0px 15px;
+    padding: 5px 20px;
     box-sizing: border-box;
+  }
+
+  .container .right-container {
+    margin-left: auto;
   }
 
   .field {
@@ -98,6 +104,7 @@ export default {
   }
 
   .btn {
+    display: block;
     background: #c8354e;
     border-color: #c8354e;
     border-bottom-color: #b32b4a;
@@ -108,12 +115,23 @@ export default {
     border-radius: 4px;
     height: initial!important;
     font-weight: 400;
+    cursor: pointer;
     transition: all .1s;
   }
 
   .btn:hover {
     background-color: #c32d4f!important;
     border-color: #c8354e;
+  }
+
+  .buttons-container {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .buttons-container .btn {
+    margin: 2px 5px;
   }
 
   .no-decoration {
@@ -126,9 +144,11 @@ export default {
   }
 
   .person {
-    max-height: 28px;
-    height: 100%;
-    width: auto;
     margin: 2px;
+    box-sizing: border-box;
+  }
+
+  .header {
+    background-color: #1c1c22;
   }
 </style>

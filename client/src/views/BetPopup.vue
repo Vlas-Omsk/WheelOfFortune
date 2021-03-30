@@ -10,8 +10,10 @@
           <label>Coins</label>
           <input type="text" v-model="coins" />
         </div>
-        <button class="btn" @click="onSubmit">Submit</button>
-        <button class="btn" @click="data.betPopup.isVisible = false">Cancel</button>
+        <div class="buttons-container">
+          <button class="btn" @click="onSubmit">Submit</button>
+          <button class="btn" @click="data.betPopup.isVisible = false">Cancel</button>
+        </div>
       </div>
     </div>
   </div>

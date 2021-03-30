@@ -27,6 +27,7 @@ export default {
 
 <style scoped>
   li {
+    display: block;
     height: 3px;
     margin: 3px 0 6px 0;
     border-radius: 2px;
@@ -47,5 +48,11 @@ export default {
   .gold-item {
     width: 36px;
     background-color: #ffc870;
+  }
+
+  @media (max-width: 510px) {
+    li {
+      margin: 0 3px 0 6px;
+    }
   }
 </style>

@@ -1,18 +1,14 @@
 <template>
-  <div class="root">
+  <div class="root" :style="rootStyle">
     <div class="wheel-container">
       <div class="wheel-body">
-        <div class="wheel" 
+        <div ref="wheell" class="wheel" 
           :style="wheelStyle">
         </div>
         <Timer />
       </div>
       <WheelHistory />
     </div>
-    <!-- <button 
-      @click="spinWheel"
-      :class="{locked: isSpinning}"
-    >Test spin</button> -->
     <Bets />
   </div>
 </template>
@@ -32,18 +28,41 @@ export default {
   },
   data() {
     return {
-      data
+      data,
+      wheelContainerMarginHorizontal: 50,
+      wheelContainerMarginVertical: 25,
+      wheelMaxWidth: 400,
+      updateKey: 0
     }
   },
   computed: {
     wheelStyle() {
+      let width = (window.innerWidth - this.wheelContainerMarginHorizontal);
+      width = width > this.wheelMaxWidth ? this.wheelMaxWidth : width;
       return {
-        transform: 'rotate(' + this.data.wheelRoteteDegree + 'deg)'
+        height: width + "px",
+        transform: 'rotate(' + this.data.wheelRoteteDegree + 'deg)',
+        '--updateKey': this.updateKey
       }
+    },
+    rootStyle() {
+      return {
+        '--wheelContainerMargin': this.wheelContainerMarginHorizontal + 'px ' + this.wheelContainerMarginVertical + 'px',
+        '--wheelMaxWidth': this.wheelMaxWidth + 'px'
+      }
+    }
+  },
+  methods: {
+    onResize() {
+      this.updateKey++;
     }
   },
   created() {
     init();
+    window.addEventListener("resize", this.onResize);
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.onResize);
   }
 }
 </script>
@@ -55,10 +74,12 @@ export default {
   }
 
   .wheel-container {
+    position: relative;
     display: flex;
     align-items: center;
-    max-width: 800px;
-    margin: auto;
+    height: 100%;
+    margin: var(--wheelContainerMargin);
+    box-sizing: border-box;
   }
 
   .wheel-body {
@@ -66,23 +87,15 @@ export default {
     display: flex;
     align-items: center;
     flex-direction: column;
-    margin: 50px 25px;
+    width: 100%;
+    overflow: hidden;
   }
 
   .wheel {
-    width: 400px;
-    height: 400px;
-    background: url('https://csgo500tr.com/static/images/wheel_400.png') no-repeat center;
+    max-width: var(--wheelMaxWidth);
+    width: 100%;
     pointer-events: none;
-  }
-
-  button {
-    margin: 15px auto;
-    width: 120px;
-  }
-
-  button.locked {
-    pointer-events: none;
-    opacity: 0.3;
+    background: url("https://csgo500tr.com/static/images/wheel_400.png") no-repeat center;
+    background-size: 100%;
   }
 </style>

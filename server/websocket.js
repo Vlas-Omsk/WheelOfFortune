@@ -10,12 +10,12 @@ const bets = [
 ];
 const partCount = 54;
 const degPerPart = 360 / partCount;
-const updateTime = 30000;
+const updateTime = 33000;
 const blueParts = [6, 8, 16, 18, 26, 28, 36, 38, 46, 48];
 
 let degrees = 0;
 let webSocketServer;
-let lastsend = getUnixNow();
+let nextSpinAt;
 let server;
 
 //#region Wheel methods
@@ -75,7 +75,7 @@ function init(ws) {
         type: 'init',
         history: history.filter((val, i) => i < 100),
         bets,
-        time: updateTime - (getUnixNow() - lastsend),
+        nextSpinAt,
         degrees
     })
 }
@@ -137,10 +137,11 @@ module.exports.init = function(_server) {
     server = _server;
     webSocketServer = new WebSocket.Server({ server: server.server })
 
+    nextSpinAt = getUnixNow() + updateTime;
     setInterval(() => {
         console.log("[WS] Send spin");
 
-        var windegree = getRandomInt(0, 361) * 3;
+        var windegree = getRandomInt(360 * 2, 360 * 3 + 1);
         degrees += windegree;
         while (degrees > 360)
             degrees -= 360;
@@ -158,10 +159,10 @@ module.exports.init = function(_server) {
         for (var bid = 0; bid < bets.length; bid++)
             bets[bid].users = [];
 
-        lastsend = getUnixNow();
+        nextSpinAt = getUnixNow() + updateTime;
         sendForEach({
             type: 'spin',
-            time: updateTime,
+            nextSpinAt,
             winnumber,
             windegree
         });

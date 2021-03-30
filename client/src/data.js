@@ -1,7 +1,7 @@
 export var data = {
     wheelRoteteDegree: 0,
-    isSpinning: false,
-    currentTime: 0,
+    spinningState: 0,
+    nextSpinAt: 0,
     history: [],
     bets: [],
     toasts: [],
@@ -9,5 +9,7 @@ export var data = {
     betPopup: {
         isVisible: false,
         bid: -1
-    }
+    },
+
+    debug: false
 }
