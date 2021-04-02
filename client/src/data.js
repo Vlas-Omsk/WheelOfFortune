@@ -10,6 +10,10 @@ export var data = {
         isVisible: false,
         bid: -1
     },
+    leftMenuWidth: 275 + 80,
+    messages: [],
+    isChatOpened: false,
+    isNewMessagesAwailable: false,
 
     debug: false
 }

@@ -1,5 +1,6 @@
 <template>
-  <div class="bets">
+  <div class="bets"
+    :class="{column: resize == 1, 'nomargin column': resize == 2}">
     <BetItem
       v-for="item in data.bets"
       v-bind:key="item.bid"
@@ -19,6 +20,21 @@ export default {
     return {
       data
     }
+  },
+  props: {
+    resizeKey: {
+      type: Number,
+      required: true
+    }
+  },
+  computed: {
+    resize() {
+      this.resizeKey;
+      if (window.innerWidth - this.data.leftMenuWidth < 210)
+        return 2;
+      if (window.innerWidth - this.data.leftMenuWidth < 510)
+        return 1;
+    }
   }
 }
 </script>
@@ -31,16 +47,12 @@ export default {
     margin: 0 2em;
   }
 
-  @media (max-width: 510px) {
-    .bets {
-      grid-template-columns: 1fr;
-      grid-template-rows: 1fr 1fr 1fr 1fr;
-    }
+  .bets.column {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
   }
 
-  @media (max-width: 210px) {
-    .bets {
-      margin: 0;
-    }
+  .bets.nomargin {
+    margin: 0;
   }
 </style>

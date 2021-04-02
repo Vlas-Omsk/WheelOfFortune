@@ -3,7 +3,8 @@
     :class="{visible: data.betPopup.isVisible}"
     @click="closePopup"
     ref="overlay">
-    <div class="popup">
+    <div class="popup"
+      ref="popup">
       <div class="popup-content">
         <h2>New bet</h2>
         <div class="field">
@@ -32,7 +33,7 @@ export default {
   },
   methods: {
     closePopup(e) {
-      if (e.path[0] == this.$refs.overlay)
+      if (e.target == this.$refs.overlay)
         data.betPopup.isVisible = false;
     },
     onSubmit() {

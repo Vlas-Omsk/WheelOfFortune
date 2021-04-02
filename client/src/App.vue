@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :style="appStyle">
     <div class="container header">
       <router-link to="/" class="no-decoration">
         <h1>Wheel of fortune</h1>
@@ -12,7 +12,13 @@
       </div>
     </div>
     <hr>
-    <router-view />
+    <div class="columns">
+      <div class="scrollable">
+        <router-view />
+      </div>
+      <LeftMenu />
+    </div>
+    
     <ToastContainer />
     <BetPopup />
   </div>
@@ -22,6 +28,7 @@
 import ToastContainer from '@/views/ToastContainer'
 import MiniProfile from '@/views/MiniProfile'
 import BetPopup from '@/views/BetPopup'
+import LeftMenu from '@/views/LeftMenu'
 import { connect } from '@/websocket'
 import { data } from '@/data'
 
@@ -35,10 +42,18 @@ export default {
   components: {
     ToastContainer,
     MiniProfile,
-    BetPopup
+    BetPopup,
+    LeftMenu
   },
   created() {
     connect();
+  },
+  computed: {
+    appStyle() {
+      return {
+        '--leftMenuWidth': this.data.leftMenuWidth + 'px'
+      }
+    }
   }
 }
 </script>
@@ -50,13 +65,34 @@ export default {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: whitesmoke;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
   }
+
+  html, body {margin: 0; height: 100%; overflow: hidden}
 
   body {
     background-color: #26262c;
-    overflow-x: hidden;
     margin: 0;
     min-width: 150px;
+    overflow: hidden;
+  }
+
+  .scrollable {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .columns {
+    display: flex;
+    flex-direction: row-reverse;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
   }
 
   hr {
@@ -150,5 +186,35 @@ export default {
 
   .header {
     background-color: #1c1c22;
+  }
+
+  *::-webkit-scrollbar {
+    background-color: rgb(33, 33, 38);
+    border-right: 1px;
+    border-right-color: rgb(33, 33, 38);
+    border-right-style: solid;
+    width: 15px;
+    height: 15px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: rgb(101, 101, 103);
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(83, 83, 83);
+  }
+
+  *::-webkit-scrollbar-thumb:active {
+    background-color: rgb(67, 67, 69);
+  }
+
+  *::-webkit-scrollbar-button:single-button {
+    height: 0;
+    width: 0;
+  }
+
+  * {
+    outline: 0;
   }
 </style>

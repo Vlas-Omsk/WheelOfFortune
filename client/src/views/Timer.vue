@@ -2,7 +2,7 @@
   <div class="timer">
     <h1
       :style="colorStyle"
-      :class="{hidden: data.spinningState != 0}">
+      :class="{hidden: data.spinningState != 0 && data.spinningState != 3}">
       {{getTime()}}
     </h1>
     <div class="arrow"
@@ -39,10 +39,13 @@ export default {
   created() {
     this.intervalId = setInterval(() => {
       const i = this.data.nextSpinAt - getUnixNow();
-      if (i > 0 && this.data.spinningState == 0)
+      if (i > 0 && this.data.spinningState == 0) {
         this.currentTime = i / 1000;
-      else
+      } else if (this.currentTime != 0) {
+        if (this.data.spinningState == 0)
+          this.data.spinningState = 3;
         this.currentTime = 0;
+      }
     }, 10);
   },
   destroyed() {

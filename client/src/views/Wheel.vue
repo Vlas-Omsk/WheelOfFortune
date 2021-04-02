@@ -1,15 +1,19 @@
 <template>
   <div class="root" :style="rootStyle">
-    <div class="wheel-container">
-      <div class="wheel-body">
-        <div ref="wheell" class="wheel" 
-          :style="wheelStyle">
+    <div class="wheel-wrapper" :class="{margin: withMargin}">
+      <div class="wheel-container">
+        <div class="wheel-body">
+          <div ref="wheell" class="wheel" 
+            :style="wheelStyle">
+          </div>
+          <Timer />
         </div>
-        <Timer />
+        <WheelHistory
+          v-bind:resizeKey="resizeKey" />
       </div>
-      <WheelHistory />
     </div>
-    <Bets />
+    <Bets
+      v-bind:resizeKey="resizeKey" />
   </div>
 </template>
 
@@ -32,17 +36,17 @@ export default {
       wheelContainerMarginHorizontal: 50,
       wheelContainerMarginVertical: 25,
       wheelMaxWidth: 400,
-      updateKey: 0
+      resizeKey: 0
     }
   },
   computed: {
     wheelStyle() {
-      let width = (window.innerWidth - this.wheelContainerMarginHorizontal);
+      let width = (window.innerWidth - this.data.leftMenuWidth - this.wheelContainerMarginHorizontal);
       width = width > this.wheelMaxWidth ? this.wheelMaxWidth : width;
       return {
         height: width + "px",
         transform: 'rotate(' + this.data.wheelRoteteDegree + 'deg)',
-        '--updateKey': this.updateKey
+        '--resizeKey': this.resizeKey
       }
     },
     rootStyle() {
@@ -50,11 +54,15 @@ export default {
         '--wheelContainerMargin': this.wheelContainerMarginHorizontal + 'px ' + this.wheelContainerMarginVertical + 'px',
         '--wheelMaxWidth': this.wheelMaxWidth + 'px'
       }
+    },
+    withMargin() {
+      this.resizeKey;
+      return window.innerWidth - this.data.leftMenuWidth > 700;
     }
   },
   methods: {
     onResize() {
-      this.updateKey++;
+      this.resizeKey++;
     }
   },
   created() {
@@ -73,6 +81,15 @@ export default {
     flex-direction: column;
   }
 
+  .wheel-wrapper {
+    max-width: 700px;
+  }
+
+  .wheel-wrapper.margin {
+    margin-left: calc((100vw - 700px - var(--leftMenuWidth)) / 2);
+    margin-right: calc((100vw - 700px - var(--leftMenuWidth)) / 2);
+  }
+  
   .wheel-container {
     position: relative;
     display: flex;

@@ -1,19 +1,11 @@
 <template>
-  <div class="wheelhistory">
-    <ul class="column">
+  <div class="wheelHistory" :class="{column: isColumn, row: !isColumn}">
+    <ul>
       <WheelHistoryItem 
         v-for="item in data.history"
         v-bind:key="item.id"
         v-bind:item="item" />
     </ul>
-    <div class="row">
-      <ul>
-        <WheelHistoryItem 
-          v-for="item in data.history"
-          v-bind:key="item.id"
-          v-bind:item="item" />
-      </ul>
-    </div>
   </div>
 </template>
 
@@ -22,6 +14,12 @@ import WheelHistoryItem from '@/views/WheelHistoryItem'
 import { data } from '@/data'
 
 export default {
+  props: {
+    resizeKey: {
+      type: Number,
+      required: true
+    }
+  },
   components: {
     WheelHistoryItem
   },
@@ -29,57 +27,72 @@ export default {
     return {
       data
     }
+  },
+  computed: {
+    isColumn() {
+      this.resizeKey;
+      return window.innerWidth - this.data.leftMenuWidth > 510;
+    }
   }
 }
 </script>
 
 <style scoped>
-ul {
+.wheelHistory {
   position: absolute;
+}
+
+ul {
+  display: flex;
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-ul.column {
-  overflow-y: scroll;
+.wheelHistory ul li {
+  display: block;
+  min-height: 3px;
+  height: 3px;
+  margin: 3px 0 6px 0;
+  border-radius: 2px;
+  min-width: 18px;
+  width: 18px;
+  background-color: #555;
+}
+
+.wheelHistory.row ul li {
+  margin: 0 3px 0 6px;
+}
+
+.wheelHistory.column {
+  right: 0;
+}
+
+.wheelHistory.column ul::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.wheelHistory.column ul {
+  flex-direction: column-reverse;
   height: calc(12px * 20);
-  transform: translateY(-50%) translateX(-100%);
-}
-
-ul, div.row {
+  transform: none;
+  overflow-y: scroll;
+  width: 36px;
   -ms-overflow-style: none;
-  overflow: -moz-scrollbars-none;
+  scrollbar-width: none;
 }
 
-ul::-webkit-scrollbar,
-div.row::-webkit-scrollbar { width: 0; }
-
-div.row {
-  display: none;
-  position: absolute;
-  width: 100%;
-  overflow-x: scroll;
-  left: 0;
+.wheelHistory.row {
   top: 0;
+  left: 0;
+  width: 100%;
   transform: translateY(-100%);
 }
 
-div.row ul {
-  display: none;
-  position: relative;
-  transform: translateY(-100%);
-}
-
-@media (max-width: 510px) {
-  ul.column {
-    display: none;
-  }
-  div.row {
-    display: block;
-  }
-  div.row ul {
-    display: inline-flex;
-  }
+.wheelHistory.row ul {
+  flex-direction: row;
+  overflow-x: scroll;
+  padding: 10px 0;
 }
 </style>

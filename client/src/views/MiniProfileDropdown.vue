@@ -65,6 +65,7 @@ ul {
   display: none;
   transition: opacity .1s, display 0s;
   transition-delay: 0s, 1s;
+  z-index: 999;
 }
 
 ul.opened {

@@ -11,7 +11,6 @@ else
 export function connect() {
     if (ws != undefined && ws.readyState === WebSocket.OPEN)
         return;
-    console.log(address);
     ws = new WebSocket(address);
 
     ws.onopen = function() {
@@ -21,7 +20,7 @@ export function connect() {
         console.log('[WS] Disconnected: ' + eventclose.reason + ' (' + eventclose.code + ')');
         setTimeout(() => {
             console.log('[WS] Reconnect');
-            ws = new WebSocket(address);
+            connect();
         }, 5000);
     }
     ws.onmessage = function(msg) {
@@ -39,10 +38,14 @@ function send(msg) {
 function processMessage(msg) {
     switch (msg.type) {
         case 'init':
-            data.history = msg.history;
-            data.bets = msg.bets;
-            data.wheelRoteteDegree = msg.degrees
-            data.nextSpinAt = msg.nextSpinAt;
+            // Wheel
+            data.history = msg.wheel.history;
+            data.bets = msg.wheel.bets;
+            data.wheelRoteteDegree = msg.wheel.degrees
+            data.nextSpinAt = msg.wheel.nextSpinAt;
+
+            // Chat
+            data.messages = msg.chat.messages;
             break;
         case 'spin':
             spinWheel(msg.windegree, msg.winnumber);
@@ -57,6 +60,11 @@ function processMessage(msg) {
         case 'update':
             data.account.username = msg.username;
             data.account.coins = msg.coins;
+            break;
+        case 'addmessage':
+            if (!data.isChatOpened)
+                data.isNewMessagesAwailable = true;
+            data.messages.unshift(msg.message);
             break;
         case 'error':
             showToast(msg.error);
@@ -82,6 +90,14 @@ export function bet(coins, bid) {
 export function update() {
     send({
         command: 'update',
+        token: data.account.token
+    });
+}
+
+export function addmessage(content) {
+    send({
+        command: 'addmessage',
+        content,
         token: data.account.token
     });
 }
