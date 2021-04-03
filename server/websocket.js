@@ -47,6 +47,22 @@ function init(ws) {
 }
 
 function processMessage(ws, msg) {
+    switch (msg.command) {
+        case 'getusers':
+            var users = [];
+            for (var i = 0; i < server.users.length; i++)
+                if (!msg.startswith || server.users[i].username.startsWith(msg.startswith)) {
+                    users.push({ id: users.length, n: server.users[i].username });
+                    if (users.length >= 5)
+                        break;
+                }
+            send(ws, {
+                type: 'getusers',
+                users
+            });
+            break;
+    }
+
     for (var i = 0; i < onProcessMessage.length; i++)
         onProcessMessage[i](ws, msg);
 }

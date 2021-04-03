@@ -16,22 +16,35 @@ function init(ws) {
     }
 }
 
+function processMessageContent(value) {
+    return value.replace(/@(\S+)/g, (val) => {
+        var name = val.slice(1);
+        var user = websocket.getserver().findUserByName(name);
+        if (user)
+            return `<a href="/profile/${user.uid}" class="user-reference">@${name}</a> `;
+        return val;
+    })
+}
+
 function addmessage(ws, msg) {
     if (validator.validate([
         {value: msg.token, error: "Empty token"},
         {value: msg.content, error: "Empty message"},
-    ], (err) => websocket.error(ws, 'add', err))) return;
+    ], (err) => websocket.error(ws, 'addmessage', err))) return;
 
+    var content = processMessageContent(msg.content.trim());
     var user = websocket.getserver().findUserByToken(msg.token);
     if (validator.validate([
-        {value: user, error: "Invalid token"}
-    ], (err) => websocket.error(ws, 'add', err))) return;
+        {value: user, error: "Invalid token"},
+        {value: content, error: "Empty message"},
+        {value: () => content.length > 140, error: "Message too large"}
+    ], (err) => websocket.error(ws, 'addmessage', err))) return;
 
     var message = {
         id: messages.length + 1,
         uid: user.uid,
         username: user.username,
-        content: msg.content,
+        content,
         time: websocket.getUnixNow()
     };
     messages.unshift(message);

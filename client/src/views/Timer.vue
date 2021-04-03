@@ -42,8 +42,10 @@ export default {
       if (i > 0 && this.data.spinningState == 0) {
         this.currentTime = i / 1000;
       } else if (this.currentTime != 0) {
-        if (this.data.spinningState == 0)
+        if (this.data.spinningState == 0) {
           this.data.spinningState = 3;
+          data.betPopup.isVisible = false;
+        }
         this.currentTime = 0;
       }
     }, 10);

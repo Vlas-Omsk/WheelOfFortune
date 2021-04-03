@@ -11,6 +11,7 @@
 <script>
 import MiniProfileDropdownItem from '@/views/MiniProfileDropdownItem'
 import { data } from '@/data'
+import { postData } from '@/methods'
 
 export default {
   components: {
@@ -35,7 +36,9 @@ export default {
         {
           name: "Sign out",
           click(data) {
-            data.account = null;
+            postData('/api/signout', {}, 
+              (err) => showToast(err.error),
+              () => { data.account = null; });
           }
         }
       ]

@@ -80,7 +80,7 @@ export async function postData(url, postData, onerror, onsuccess) {
     // xhr.send(JSON.stringify(data));
     if (data.debug)
         if (url[0] == '/')
-            url = 'http://localhost:48670' + url;
+            url = 'http://10.0.0.103:48670' + url;
 
     postData = JSON.stringify(postData);
     const response = await fetch(url, {
@@ -88,6 +88,7 @@ export async function postData(url, postData, onerror, onsuccess) {
         headers: {
             'Content-Type': 'application/json'
         },
+        credentials: "include",
         body: postData
     });
     const responseData = await response.json();
@@ -150,4 +151,8 @@ export function easyAnimate(callback, start_value, end_value, time, func, endani
 
 export function getUnixNow() {
     return (+ new Date());
+}
+
+export function isEmpty(str) {
+    return (!str || str.length === 0 || (str.trim && !str.trim()));
 }

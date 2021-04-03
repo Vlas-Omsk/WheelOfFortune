@@ -1,7 +1,8 @@
 <template>
   <div class="overlay"
     :class="{visible: data.betPopup.isVisible}"
-    @click="closePopup"
+    @mousedown="closePopup"
+    @touchstart="closePopup"
     ref="overlay">
     <div class="popup"
       ref="popup">

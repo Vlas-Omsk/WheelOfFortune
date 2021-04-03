@@ -4,12 +4,12 @@
       <div class="miniprofile-container">
         <div class="username">{{data.account.username}}</div>
         <div class="coins">
-          <img src="coin.svg">
+          <img src="/coin.svg">
           <div>{{data.account.coins}}</div>
         </div>
       </div>
-      <img class="dropdownarrow" :class="{opened: isDropdownOpened}" src="arrow.svg">
-      <img class="person" src="user.svg">
+      <img class="dropdownarrow" :class="{opened: isDropdownOpened}" src="/arrow.svg">
+      <img class="person" src="/user.svg">
     </div>
     <MiniProfileDropdown
       v-bind:isDropdownOpened="isDropdownOpened"

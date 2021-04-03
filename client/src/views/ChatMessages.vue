@@ -11,6 +11,7 @@
 <script>
 import ChatMessageItem from '@/views/ChatMessageItem'
 import { data } from '@/data'
+import { on, off } from '@/websocket'
 
 export default {
   data() {
@@ -32,6 +33,17 @@ export default {
         this.lastReadedMessageId = this.data.messages[0].id;
       }
     }
+  },
+  created() {
+    on('addmessage', 'chatmessages', () => {
+      if (this.$refs.chatmessages.scrollHeight - 800 - 99 < this.$refs.chatmessages.scrollTop)
+        setTimeout(() => {
+          this.$refs.chatmessages.scrollTop = this.$refs.chatmessages.scrollHeight;
+        }, 100);
+    });
+  },
+  destroyed() {
+    off('chatmessages');
   }
 }
 </script>

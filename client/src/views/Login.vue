@@ -32,7 +32,6 @@ export default {
   methods: {
     success(data) {
       this.data.account = data;
-      this.data.isAccountActive = true;
 
       this.$router.push("/");
     },

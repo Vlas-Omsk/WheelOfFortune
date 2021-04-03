@@ -91,6 +91,9 @@ function processMessage(ws, msg) {
                     error: "Empty token"
                 });
             var user = websocket.getserver().findUserByToken(msg.token);
+            if (validator.validate([
+                {value: user, error: "Invalid token"}
+            ], (err) => websocket.error(ws, 'update', err))) return;
             websocket.send(ws, {
                 type: 'update',
                 username: user.username,

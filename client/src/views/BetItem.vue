@@ -35,8 +35,17 @@ export default {
       }
     },
     isLocked() {
-      if (this.data.spinningState == 2)
-        return this.item.color !== getWheelColorByDeg(this.data.wheelRoteteDegree);
+      if (this.data.spinningState == 2) {
+        var b = this.item.color !== getWheelColorByDeg(this.data.wheelRoteteDegree);
+        if (!b) {
+          var multiple = Number(this.item.title.slice(0, -1));
+          for (var i = 0; i < this.item.users.length; i++) {
+            this.item.users[i].coins *= multiple;
+            console.log(this.item.users[i].coins);
+          }
+        }
+        return b;
+      }
       return data.spinningState != 0
     }
   },

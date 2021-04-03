@@ -3,8 +3,9 @@ import { data } from '@/data'
 
 var ws = null;
 let address;
+const listeners = [];
 if (data.debug)
-    address = "ws://localhost:48670/";
+    address = "ws://10.0.0.103:48670/";
 else
     address = "ws://" + window.location.host + "/";
 
@@ -64,12 +65,29 @@ function processMessage(msg) {
         case 'addmessage':
             if (!data.isChatOpened)
                 data.isNewMessagesAwailable = true;
-            data.messages.unshift(msg.message);
+            var insertAfter = -1,
+                deleteCount = 0;
+            for (var i = 0; i < data.messages.length; i++) {
+                if (data.messages[i].id == msg.message.id - 1 && data.messages.length > i + 1)
+                    insertAfter = i;
+                if (data.messages[i].id == msg.message.id) {
+                    deleteCount = 1;
+                    insertAfter = i;
+                }
+            }
+
+            if (insertAfter == -1)
+                data.messages.unshift(msg.message);
+            else
+                data.messages.splice(insertAfter, deleteCount, msg.message);
             break;
         case 'error':
             showToast(msg.error);
             break;
     }
+    for (var i = 0; i < listeners.length; i++)
+        if (listeners[i] && listeners[i].type == msg.type)
+            listeners[i].callback(msg);
 }
 
 export function init() {
@@ -100,4 +118,21 @@ export function addmessage(content) {
         content,
         token: data.account.token
     });
+}
+
+export function getusers(startswith) {
+    send({
+        command: 'getusers',
+        startswith
+    });
+}
+
+export function on(type, id, callback) {
+    listeners.push({type, id, callback});
+}
+
+export function off(id) {
+    for (var i = 0; i < listeners.length; i++)
+        if (listeners[i] && listeners[i].id == id)
+            delete listeners[i];
 }

@@ -1,7 +1,7 @@
 <template>
   <li :id="'message' + this.id">
     <div class="message-body">
-      <router-link class="message-author no-decoration" to="#">{{msg.username}}</router-link>
+      <router-link class="message-author no-decoration" :class="{'own-message': isOwnMessage}" to="#">{{msg.username}}</router-link>
       <div class="message-content">
         <span v-html="msg.content.replace('\n', '<br>').replace('\r\n', '<br>')"></span>
       </div>
@@ -10,7 +10,14 @@
 </template>
 
 <script>
+import { data } from '@/data'
+
 export default {
+  data() {
+    return {
+      data
+    }
+  },
   props: {
     msg: {
       type: Object,
@@ -18,6 +25,15 @@ export default {
     },
     id: {
       type: Number
+    }
+  },
+  computed: {
+    isOwnMessage() {
+      if (!this.data.account)
+        return false;
+      else if (this.data.account.uid == this.msg.uid)
+        return true;
+      return false;
     }
   }
 }
@@ -59,5 +75,26 @@ li {
   word-break: break-word;
   display: block;
   text-align: left;
+}
+
+.own-message {
+  color: rgb(118, 118, 255);
+}
+</style>
+
+<style>
+.user-reference {
+  display: inline-block;
+  border-radius: 10%;
+  padding: 2px 4px!important;
+  background: #35353a;
+  font-weight: bold;
+  cursor: pointer;
+  color: rgb(199, 199, 199);
+  text-decoration: none;
+}
+
+.user-reference:hover {
+  text-decoration: underline;
 }
 </style>
