@@ -3,7 +3,7 @@
     <div class="message-body">
       <router-link class="message-author no-decoration" :class="{'own-message': isOwnMessage}" to="#">{{msg.username}}</router-link>
       <div class="message-content">
-        <span v-html="msg.content.replace('\n', '<br>').replace('\r\n', '<br>')"></span>
+        <span>{{getContent}}</span>
       </div>
     </div>
   </li>
@@ -34,6 +34,9 @@ export default {
       else if (this.data.account.uid == this.msg.uid)
         return true;
       return false;
+    },
+    getContent() {
+      return this.msg.content.replace('\n', '<br>').replace('\r\n', '<br>')
     }
   }
 }
